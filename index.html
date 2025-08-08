@@ -178,150 +178,149 @@
   <div style="text-align:center; padding:30px;">
     <button onclick="if(validateForm()) downloadInvoiceAsPDF()">📄 Download Invoice as PDF</button>
     <button onclick="if(validateForm()) downloadInvoiceAsImage()">🖼️ Download Invoice as JPG</button>
+    <button id="whatsappBtn" style="display:none;" onclick="sendToWhatsApp()">📤 Send to WhatsApp</button>
   </div>
   <div id="invoiceContent"></div>
-<div class="products">
-  <script>
-    // JavaScript for entire e-commerce website
-    const products = [
-      { name: "Tactical Boots", qty: 5, price: 1599, image: "https://images-cdn.ubuy.co.in/66b15b9aeca7f677167337cb-men-39-s-tactical-military-work-boots.jpg "},
-      { name: "Energy Bars", qty: 10, price: 249, image: " https://m.media-amazon.com/images/I/71GS9RNGdbL._AC_SL1500_.jpg" },
-      { name: "Power Bank", qty: 8, price: 1799, image: "https://m.media-amazon.com/images/I/51vHvyDpzgL._AC_SL1500_.jpg" },
-      { name: "Backpack", qty: 6, price: 1299, image: "https://images-cdn.ubuy.co.in/644a2c5250be35446c2a4133-ferrino-core-backpack-black-small30l.jpg" },
-      { name: "Combat Gloves", qty: 12, price: 499, image: "https://images-cdn.ubuy.co.in/6816361fc8452f4cc2024dda-gloves-combat-army-type-ii-capacitive.jpg" },
-    { name: "Rain Poncho", qty: 15, price: 799, image: "https://images-cdn.ubuy.co.in/686f78ddaf91bcb16e03115d-tactics-poncho-waterproof-camouflage.jpg" },
-    { name: "Flashlight", qty: 10, price: 599, image: "https://images-cdn.ubuy.co.in/685b72db2307846fd701ff9a-flashlght-tactical-led-5w-700l.jpg" },
-      {
-        name: "Tactical Boots",
-        price: 999,
-        quantity: 5,
-        image: "https://images-cdn.ubuy.co.in/66b15b9aeca7f677167337cb-men-39-s-tactical-military-work-boots.jpg"
-      },
-      {
-        name: "Combat Boots",
-        price: 1299,
-        quantity: 3,
-        image: "https://images.unsplash.com/photo-1597764699510-1a2f9a1b09ed?auto=format&fit=crop&w=250&q=80"
-      }
-    ];
 
-    let cart = [];
+<script>
+const products = [
+  { name: "Tactical Boots", qty: 5, price: 1599, image: "https://images-cdn.ubuy.co.in/66b15b9aeca7f677167337cb-men-39-s-tactical-military-work-boots.jpg"},
+  { name: "Energy Bars", qty: 10, price: 249, image: "https://m.media-amazon.com/images/I/71GS9RNGdbL._AC_SL1500_.jpg" },
+  { name: "Power Bank", qty: 8, price: 1799, image: "https://m.media-amazon.com/images/I/51vHvyDpzgL._AC_SL1500_.jpg" },
+  { name: "Backpack", qty: 6, price: 1299, image: "https://images-cdn.ubuy.co.in/644a2c5250be35446c2a4133-ferrino-core-backpack-black-small30l.jpg" },
+  { name: "Combat Gloves", qty: 12, price: 499, image: "https://images-cdn.ubuy.co.in/6816361fc8452f4cc2024dda-gloves-combat-army-type-ii-capacitive.jpg" },
+  { name: "Rain Poncho", qty: 15, price: 799, image: "https://images-cdn.ubuy.co.in/686f78ddaf91bcb16e03115d-tactics-poncho-waterproof-camouflage.jpg" },
+  { name: "Flashlight", qty: 10, price: 599, image: "https://images-cdn.ubuy.co.in/685b72db2307846fd701ff9a-flashlght-tactical-led-5w-700l.jpg" },
+];
 
-    function displayProducts() {
-      const query = document.getElementById("searchBar").value.toLowerCase();
-      const list = document.getElementById("product-list");
-      list.innerHTML = products.filter(p => p.name.toLowerCase().includes(query)).map(product => `
-        <div class="product">
-          <img src="${product.image}" alt="${product.name}" />
-          <div>
-            <h3>${product.name}</h3>
-            <p>Available: ${product.qty}</p>
-            <p>Price: ₹${product.price}</p>
-            <button onclick="addToCart('${product.name}')">Add to Cart</button>
-          </div>
-        </div>
-      `).join('');
-    }
+let cart = [];
 
-    function addToCart(name) {
-      const product = products.find(p => p.name === name);
-      if (product.qty <= 0) return alert("Out of stock!");
-      const item = cart.find(i => i.name === name);
-      if (item) item.qty++;
-      else cart.push({ ...product, qty: 1 });
-      product.qty--;
-      updateCart();
-    }
+function displayProducts() {
+  const query = document.getElementById("searchBar").value.toLowerCase();
+  const list = document.getElementById("product-list");
+  list.innerHTML = products.filter(p => p.name.toLowerCase().includes(query)).map(product => `
+    <div class="product">
+      <img src="${product.image}" alt="${product.name}" />
+      <div>
+        <h3>${product.name}</h3>
+        <p>Available: ${product.qty}</p>
+        <p>Price: ₹${product.price}</p>
+        <button onclick="addToCart('${product.name}')">Add to Cart</button>
+      </div>
+    </div>
+  `).join('');
+}
 
-    function removeFromCart(name) {
-      const item = cart.find(i => i.name === name);
-      const product = products.find(p => p.name === name);
-      if (!item) return;
-      item.qty--;
-      product.qty++;
-      if (item.qty === 0) cart = cart.filter(i => i.name !== name);
-      updateCart();
-    }
+function addToCart(name) {
+  const product = products.find(p => p.name === name);
+  if (product.qty <= 0) return alert("Out of stock!");
+  const item = cart.find(i => i.name === name);
+  if (item) item.qty++;
+  else cart.push({ ...product, qty: 1 });
+  product.qty--;
+  updateCart();
+}
 
-    function updateCart() {
-      document.getElementById("cartCount").textContent = cart.reduce((sum, item) => sum + item.qty, 0);
-      const cartDiv = document.getElementById("cart");
-      let html = cart.map(item => `
-        <p>${item.name} x ${item.qty} = ₹${item.qty * item.price}
-        <button onclick="addToCart('${item.name}')">+</button>
-        <button onclick="removeFromCart('${item.name}')">-</button></p>
-      `).join('');
-      const total = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
-      html += `<h3>Total: ₹${total}</h3>`;
-      cartDiv.innerHTML = html;
-    }
+function removeFromCart(name) {
+  const item = cart.find(i => i.name === name);
+  const product = products.find(p => p.name === name);
+  if (!item) return;
+  item.qty--;
+  product.qty++;
+  if (item.qty === 0) cart = cart.filter(i => i.name !== name);
+  updateCart();
+}
 
-    function scrollToCart() {
-      document.getElementById("cart").scrollIntoView({ behavior: 'smooth' });
-    }
+function updateCart() {
+  document.getElementById("cartCount").textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+  const cartDiv = document.getElementById("cart");
+  let html = cart.map(item => `
+    <p>${item.name} x ${item.qty} = ₹${item.qty * item.price}
+    <button onclick="addToCart('${item.name}')">+</button>
+    <button onclick="removeFromCart('${item.name}')">-</button></p>
+  `).join('');
+  const total = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
+  html += `<h3>Total: ₹${total}</h3>`;
+  cartDiv.innerHTML = html;
+}
 
-    function validateForm() {
-      const name = document.getElementById("name").value.trim();
-      const rank = document.getElementById("rank").value.trim();
-      const coy = document.getElementById("coy").value.trim();
-      const force = document.getElementById("forceNumber").value.trim();
-      const kpkb = document.getElementById("kpkbNumber").value.trim();
-      if (!name || !rank || !coy || !force || !kpkb) return alert("Please fill all fields.") && false;
-      return true;
-    }
+function scrollToCart() {
+  document.getElementById("cart").scrollIntoView({ behavior: 'smooth' });
+}
 
-    function generateInvoiceHTML() {
-      const name = document.getElementById("name").value;
-      const rank = document.getElementById("rank").value;
-      const coy = document.getElementById("coy").value;
-      const force = document.getElementById("forceNumber").value;
-      const kpkb = document.getElementById("kpkbNumber").value;
-      const now = new Date();
-      const invoiceNumber = 'INV-' + now.getTime();
-      const date = now.toLocaleDateString();
-      const time = now.toLocaleTimeString();
-      let content = `<h2>INVOICE</h2><p>Invoice No: ${invoiceNumber}</p><p>Date: ${date}</p><p>Time: ${time}</p>`;
-      content += `<p><strong>Name:</strong> ${name}</p><p><strong>Rank:</strong> ${rank}</p><p><strong>Coy:</strong> ${coy}</p><p><strong>Force No:</strong> ${force}</p><p><strong>KPKB No:</strong> ${kpkb}</p><hr/>`;
-      cart.forEach(item => {
-        content += `<p>${item.name} x ${item.qty} = ₹${item.qty * item.price}</p>`;
-      });
-      const total = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
-      content += `<h3>Total: ₹${total}</h3>`;
-      return content;
-    }
+function validateForm() {
+  const name = document.getElementById("name").value.trim();
+  const rank = document.getElementById("rank").value.trim();
+  const coy = document.getElementById("coy").value.trim();
+  const force = document.getElementById("forceNumber").value.trim();
+  const kpkb = document.getElementById("kpkbNumber").value.trim();
+  if (!name || !rank || !coy || !force || !kpkb) return alert("Please fill all fields.") && false;
+  return true;
+}
 
-    function downloadInvoiceAsPDF() {
-      const invoice = document.getElementById("invoiceContent");
-      invoice.innerHTML = generateInvoiceHTML();
-      invoice.style.display = 'block';
-      html2canvas(invoice).then(canvas => {
-        const imgData = canvas.toDataURL("image/png");
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF();
-        pdf.addImage(imgData, "PNG", 10, 10, 180, 0);
-        pdf.save("invoice.pdf");
-        invoice.style.display = 'none';
-      });
-    }
+function generateInvoiceHTML() {
+  const name = document.getElementById("name").value;
+  const rank = document.getElementById("rank").value;
+  const coy = document.getElementById("coy").value;
+  const force = document.getElementById("forceNumber").value;
+  const kpkb = document.getElementById("kpkbNumber").value;
+  const now = new Date();
+  const invoiceNumber = 'INV-' + now.getTime();
+  const date = now.toLocaleDateString();
+  const time = now.toLocaleTimeString();
+  let content = `<h2>INVOICE</h2><p>Invoice No: ${invoiceNumber}</p><p>Date: ${date}</p><p>Time: ${time}</p>`;
+  content += `<p><strong>Name:</strong> ${name}</p><p><strong>Rank:</strong> ${rank}</p><p><strong>Coy:</strong> ${coy}</p><p><strong>Force No:</strong> ${force}</p><p><strong>KPKB No:</strong> ${kpkb}</p><hr/>`;
+  cart.forEach(item => {
+    content += `<p>${item.name} x ${item.qty} = ₹${item.qty * item.price}</p>`;
+  });
+  const total = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
+  content += `<h3>Total: ₹${total}</h3>`;
+  return content;
+}
 
-    function downloadInvoiceAsImage() {
-      const invoice = document.getElementById("invoiceContent");
-      invoice.innerHTML = generateInvoiceHTML();
-      invoice.style.display = 'block';
-      html2canvas(invoice).then(canvas => {
-        const link = document.createElement("a");
-        link.download = "invoice.jpg";
-        link.href = canvas.toDataURL("image/jpeg");
-        link.click();
-        invoice.style.display = 'none';
-      });
-    }
+function showWhatsAppButton() {
+  document.getElementById("whatsappBtn").style.display = "inline-block";
+}
 
-    displayProducts();
-    updateCart();
-  </script>
+function downloadInvoiceAsPDF() {
+  const invoice = document.getElementById("invoiceContent");
+  invoice.innerHTML = generateInvoiceHTML();
+  invoice.style.display = 'block';
+  html2canvas(invoice).then(canvas => {
+    const imgData = canvas.toDataURL("image/png");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+    pdf.addImage(imgData, "PNG", 10, 10, 180, 0);
+    pdf.save("invoice.pdf");
+    invoice.style.display = 'none';
+    showWhatsAppButton();
+  });
+}
 
+function downloadInvoiceAsImage() {
+  const invoice = document.getElementById("invoiceContent");
+  invoice.innerHTML = generateInvoiceHTML();
+  invoice.style.display = 'block';
+  html2canvas(invoice).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "invoice.jpg";
+    link.href = canvas.toDataURL("image/jpeg");
+    link.click();
+    invoice.style.display = 'none';
+    showWhatsAppButton();
+  });
+}
+
+function sendToWhatsApp() {
+  const name = document.getElementById("name").value;
+  const total = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
+  const message = `Hello, here is your invoice for CRPF Canteen.\nName: ${name}\nTotal: ₹${total}\n(Invoice file is downloaded on your device.)`;
+  const phoneNumber = "919686590522"; // Change this number
+  window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
+}
+
+displayProducts();
+updateCart();
+</script>
 </body>
 </html>
-
-
