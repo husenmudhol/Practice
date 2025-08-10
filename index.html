@@ -313,6 +313,7 @@ function downloadInvoiceAsImage() {
 
 function sendToWhatsApp() {
   const name = document.getElementById("name").value;
+  const invoice = document.getElementById("invoiceContent");
   const total = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
   const message = `Hello, here is your invoice for CRPF Canteen.\nName: ${name}\nTotal: ₹${total}\n(Invoice file is downloaded on your device.)`;
   const phoneNumber = "919686590522"; // Change this number
@@ -324,3 +325,4 @@ updateCart();
 </script>
 </body>
 </html>
+
